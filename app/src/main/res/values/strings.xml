@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Money Flow</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="home">Home</string>
+    <string name="create">Create</string>
+    <string name="settings">Settings</string>
+
+    <string name="error_zero_field">Can\'t be zero</string>
+    <string name="error_empty_field">Сan\'t be empty</string>
+    <string name="error_dot_field">Wrong format</string>
+
+    <!--Bottom Navigation Bar Menu Titles!-->
+    <string name="title_home">Home</string>
+    <string name="title_create">Create</string>
+    <string name="title_settings">Settings</string>
+
+    <string name="type_date_calendar">mm/dd/yyyy</string>
+    <string name="label_date_calendar">Date</string>
+    <string name="title_select_date">Select Date</string>
+
+    <string name="label_amount">Amount</string>
+    <string name="label_category">Category</string>
+    <string name="content_description_image_of_transaction">Image of Transaction</string>
+
+</resources>

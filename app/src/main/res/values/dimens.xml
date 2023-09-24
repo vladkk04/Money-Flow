@@ -1,0 +1,14 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="balance">40sp</dimen>
+
+
+    <dimen name="image_size_type_of_transaction">40dp</dimen>
+
+    <dimen name="corner_radius_transaction_list">6dp</dimen>
+    <dimen name="margin_transaction_list">5dp</dimen>
+    <dimen name="padding_transaction_list">7dp</dimen>
+</resources>

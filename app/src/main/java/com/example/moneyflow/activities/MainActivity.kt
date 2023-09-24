@@ -18,6 +18,7 @@ class MainActivity: AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
 
+
     private val navigationViewModel: NavigationViewModel by viewModels()
     private val createTransactionViewModel: CreateTransactionViewModel by createTransactionViewModel()
 

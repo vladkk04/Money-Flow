@@ -14,7 +14,6 @@ import com.example.moneyflow.fragments.create.CreateTransactionViewModel
 import com.example.moneyflow.viewmodels.createTransactionViewModel
 import kotlinx.coroutines.launch
 
-
 class MainActivity: AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!

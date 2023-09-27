@@ -24,9 +24,4 @@ object DataPickerUtils {
     private fun isYesterday(date: Date) = DateUtils.isToday(date.time + DateUtils.DAY_IN_MILLIS)
 
     private fun isTomorrow(date: Date) = DateUtils.isToday(date.time - DateUtils.DAY_IN_MILLIS)
-
-    val datePicker = MaterialDatePicker.Builder.datePicker()
-        .setTitleText("Select dates")
-        .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-        .build()
 }

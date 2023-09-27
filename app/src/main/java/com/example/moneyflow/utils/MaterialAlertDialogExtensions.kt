@@ -1,11 +1,12 @@
 package com.example.moneyflow.utils
 
 
+import android.util.Log
 import com.example.moneyflow.models.PermissionDialogUIState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 fun MaterialAlertDialogBuilder.permissionDialogShow(permissionsDialogUIState: PermissionDialogUIState) {
-    val buttonText = if (permissionsDialogUIState.isPermanentlyDeclined) {
+    val positiveButtonText = if (!permissionsDialogUIState.isPermanentlyDeclined) {
         "Grant permission"
     } else {
         "Ok"
@@ -14,15 +15,17 @@ fun MaterialAlertDialogBuilder.permissionDialogShow(permissionsDialogUIState: Pe
     MaterialAlertDialogBuilder(this@permissionDialogShow.context)
         .setTitle(permissionsDialogUIState.title)
         .setMessage(permissionsDialogUIState.message.getMessage(permissionsDialogUIState.isPermanentlyDeclined))
-        .setPositiveButton(buttonText) { _, _ ->
-            permissionsDialogUIState.onAllowClick()
+        .setPositiveButton(positiveButtonText) { _, _ ->
+            if (permissionsDialogUIState.isPermanentlyDeclined) {
+                permissionsDialogUIState.onOkClick()
+            } else {
+                permissionsDialogUIState.onGoToAppSettingsClick()
+            }
         }
         .setOnDismissListener {
             permissionsDialogUIState.onDismissClick()
         }.show()
 }
-
-
 
 class CameraPermissionMessageProvider: PermissionsMessageProvider {
     override fun getMessage(isPermanentlyDeclined: Boolean): String {

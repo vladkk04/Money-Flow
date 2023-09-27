@@ -42,6 +42,7 @@ class NavigationViewModel: ViewModel() {
     }
 
     private fun launchFragment(activity: MainActivity, screen: BaseScreen) {
+        val fragment = screen.javaClass.newInstance() as Fragment
         val fragmentTag = screen.javaClass.canonicalName
         val existingFragment = activity.supportFragmentManager.findFragmentByTag(fragmentTag)
 
@@ -49,7 +50,7 @@ class NavigationViewModel: ViewModel() {
             return
 
         activity.supportFragmentManager.commit {
-            replace(R.id.fv_container, screen as Fragment, fragmentTag)
+            replace(R.id.fv_container, fragment, fragmentTag)
         }
     }
 

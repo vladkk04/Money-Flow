@@ -1,6 +1,5 @@
 package com.example.moneyflow.fragments.create
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moneyflow.models.CreateTransactionItemUIState
@@ -20,14 +19,7 @@ class CreateTransactionViewModel(
     private val _uiItemState = MutableStateFlow(CreateTransactionItemUIState())
     val uiItemState get() = _uiItemState.asStateFlow()
 
-    private val _uiState = MutableStateFlow(CreateTransactionUIState(
-        showGallery = {
-            showGallery()
-        },
-        showDatePicker = {
-            showDataPicker()
-        }
-    ))
+    private val _uiState = MutableStateFlow(CreateTransactionUIState())
     val uiState get() = _uiState.asStateFlow()
 
     init {
@@ -94,18 +86,6 @@ class CreateTransactionViewModel(
                 throw cancellationException
             }
         }
-    }
-
-    private fun showDataPicker() {
-        _uiState.update {
-            it.copy (
-                isActiveDataPicker = true
-            )
-        }
-    }
-
-    private fun showGallery() {
-        Log.d("x", "image")
     }
 
     private fun resetValues() {

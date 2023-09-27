@@ -6,7 +6,7 @@ data class PermissionDialogUIState(
     val title: String,
     val message: PermissionsMessageProvider,
     val isPermanentlyDeclined: Boolean,
-    val onAllowClick: () -> Unit,
+    val onOkClick: () -> Unit,
     val onDismissClick: () -> Unit,
     val onGoToAppSettingsClick: () -> Unit
 )

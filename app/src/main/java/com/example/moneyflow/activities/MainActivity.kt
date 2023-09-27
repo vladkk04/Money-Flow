@@ -31,20 +31,10 @@ class MainActivity: AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    createTransactionViewModel.uiState.collect { value ->
-                        if (value.isCreationAllowed && !value.isCreated) {
-                            createItemMenuView.setOnLongClickListener(createOnLongClickListener())
-                            changeIconCreate(R.drawable.ic_done)
-                        } else {
-                            createItemMenuView.setOnLongClickListener(null)
-                            changeIconCreate(R.drawable.ic_create)
-                        }
-                    }
+                    observeCreateTransactionUIState()
                 }
                 launch {
-                    navigationViewModel.uiState.collect { uiState ->
-                        navigationViewModel.navigateTo(this@MainActivity, uiState.isNavigateTo)
-                    }
+                    observeNavigationUIState()
                 }
             }
         }
@@ -52,6 +42,23 @@ class MainActivity: AppCompatActivity() {
         binding.bottomNav.setOnItemSelectedListener { item ->
             navigationViewModel.navigationItemSelected(item.itemId)
             true
+        }
+    }
+
+    private suspend fun observeCreateTransactionUIState() {
+        createTransactionViewModel.uiState.collect { value ->
+            if (value.isCreationAllowed && !value.isCreated) {
+                createItemMenuView.setOnLongClickListener(createOnLongClickListener())
+                changeIconCreate(R.drawable.ic_done)
+            } else {
+                createItemMenuView.setOnLongClickListener(null)
+                changeIconCreate(R.drawable.ic_create)
+            }
+        }
+    }
+    private suspend fun observeNavigationUIState() {
+        navigationViewModel.uiState.collect { uiState ->
+            navigationViewModel.navigateTo(this@MainActivity, uiState.isNavigateTo)
         }
     }
 

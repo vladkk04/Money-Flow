@@ -2,7 +2,7 @@ package com.example.moneyflow.utils
 
 
 import com.example.moneyflow.domain.model.PermissionsMessageProvider
-import com.example.moneyflow.ui.models.ui_state.PermissionDialogUIState
+import com.example.moneyflow.ui.ui_state.PermissionDialogUIState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 fun MaterialAlertDialogBuilder.showPermissionDialog(permissionsDialogUIState: PermissionDialogUIState) {

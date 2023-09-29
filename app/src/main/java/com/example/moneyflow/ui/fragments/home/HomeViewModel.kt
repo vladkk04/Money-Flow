@@ -2,7 +2,7 @@ package com.example.moneyflow.ui.fragments.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moneyflow.ui.models.ui_state.HomeUIState
+import com.example.moneyflow.ui.ui_state.HomeUIState
 import com.example.moneyflow.domain.use_case.HomeUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

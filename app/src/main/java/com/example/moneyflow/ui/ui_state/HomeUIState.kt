@@ -1,4 +1,4 @@
-package com.example.moneyflow.ui.models.ui_state
+package com.example.moneyflow.ui.ui_state
 
 import com.example.moneyflow.data.local.entities.Transaction
 

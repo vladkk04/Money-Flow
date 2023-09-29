@@ -3,8 +3,8 @@ package com.example.moneyflow.ui.fragments.create
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moneyflow.ui.models.ui_state.CreateTransactionItemUIState
-import com.example.moneyflow.ui.models.ui_state.CreateTransactionUIState
+import com.example.moneyflow.ui.ui_state.CreateTransactionItemUIState
+import com.example.moneyflow.ui.ui_state.CreateTransactionUIState
 import com.example.moneyflow.domain.use_case.CreateTransactionUseCase
 import com.example.moneyflow.domain.model.Category
 import kotlinx.coroutines.CancellationException

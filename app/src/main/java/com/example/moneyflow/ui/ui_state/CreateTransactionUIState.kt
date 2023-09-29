@@ -1,4 +1,4 @@
-package com.example.moneyflow.ui.models.ui_state
+package com.example.moneyflow.ui.ui_state
 
 data class CreateTransactionUIState(
     val isCreationAllowed: Boolean = false,

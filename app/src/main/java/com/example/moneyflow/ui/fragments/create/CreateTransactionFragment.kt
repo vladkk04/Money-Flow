@@ -25,8 +25,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.moneyflow.R
 import com.example.moneyflow.databinding.FragmentCreateNewTransactionBinding
 import com.example.moneyflow.ui.base.BaseScreen
-import com.example.moneyflow.ui.models.ui_state.CreateTransactionItemUIState
-import com.example.moneyflow.ui.models.ui_state.PermissionDialogUIState
+import com.example.moneyflow.ui.ui_state.CreateTransactionItemUIState
+import com.example.moneyflow.ui.ui_state.PermissionDialogUIState
 import com.example.moneyflow.domain.model.Category
 import com.example.moneyflow.utils.DataPicker
 import com.example.moneyflow.utils.ImageStorageManager

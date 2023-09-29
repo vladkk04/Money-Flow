@@ -34,8 +34,12 @@ import com.example.moneyflow.utils.ReadImageAndVideoPermissionMessageProvider
 import com.example.moneyflow.utils.showPermissionDialog
 import com.example.moneyflow.ui.viewmodels.PermissionsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Date
 
 
@@ -69,9 +73,7 @@ class CreateTransactionFragment : Fragment(), BaseScreen {
         updateUI(createTransactionViewModel.uiItemState.value)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                observeCreateTransactionUIState()
-            }
+            observeCreateTransactionUIState()
         }
     }
 
@@ -80,11 +82,12 @@ class CreateTransactionFragment : Fragment(), BaseScreen {
         _binding = null
     }
 
-
     private suspend fun observeCreateTransactionUIState() {
-        createTransactionViewModel.uiState.collectLatest { uiState ->
-            if(uiState.isCreated){
-                updateUI(createTransactionViewModel.uiItemState.value)
+        withContext(Dispatchers.Default) {
+            createTransactionViewModel.uiState.collect { uiState ->
+                if(uiState.isCreated){
+                    updateUI(createTransactionViewModel.uiItemState.value)
+                }
             }
         }
     }

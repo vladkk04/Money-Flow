@@ -31,6 +31,7 @@ class CreateTransactionViewModel(
         }
     }
 
+
     fun setAmount(amount: Double?) {
         if (amount != null) {
             _uiItemState.update {

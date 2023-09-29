@@ -4,12 +4,16 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.CAMERA"/>
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
 
     <application
-        android:name=".di.MoneyFlowApplication"
+        android:name=".MoneyFlowApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,7 +24,7 @@
         android:theme="@style/Theme.MoneyFlow"
         tools:targetApi="31">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".ui.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:exported="true"

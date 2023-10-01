@@ -56,13 +56,11 @@ class CreateTransactionViewModel(
         }
     }
 
-    fun setImage(image: Uri?) {
-        if (image != null) {
-            _uiItemState.update {
-                it.copy(
-                    image = image
-                )
-            }
+    fun setImage(image: Uri) {
+        _uiItemState.update {
+            it.copy(
+                image = image
+            )
         }
     }
 

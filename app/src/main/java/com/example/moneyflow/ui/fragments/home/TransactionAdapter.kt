@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moneyflow.data.local.entities.Transaction
 import com.example.moneyflow.databinding.TransactionRecycleViewRowBinding
-import com.example.moneyflow.utils.DataPicker
+import com.example.moneyflow.utils.currentDay
 import java.util.Date
 
 class TransactionAdapter(): ListAdapter<Transaction, TransactionAdapter.TransactionViewHolder>(
@@ -21,7 +21,7 @@ class TransactionAdapter(): ListAdapter<Transaction, TransactionAdapter.Transact
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
         val currentTransaction = getItem(position)
         holder.binding.textViewExpense.text = currentTransaction.amount.toString()
-        holder.binding.textViewDate.text = DataPicker().currentDay(Date(currentTransaction.date))
+        holder.binding.textViewDate.text = currentDay(Date(currentTransaction.date))
         holder.binding.textViewCategoryTransaction.text = currentTransaction.category.name
         holder.binding.imageViewTypeTransaction.setImageResource(currentTransaction.category.icon)
     }

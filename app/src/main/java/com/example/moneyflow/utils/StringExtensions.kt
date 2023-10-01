@@ -3,6 +3,9 @@ package com.example.moneyflow.utils
 import java.text.DecimalFormat
 
 
+
+
+
 fun getFormatAmount(amount: String?): Double? {
     val amountWithoutComma = amount?.replace(",", "")
     return amountWithoutComma?.toDoubleOrNull()

@@ -2,8 +2,6 @@ package com.example.moneyflow.ui.fragments.create
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,7 +14,6 @@ import android.view.ViewGroup
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -28,18 +25,15 @@ import com.example.moneyflow.ui.base.BaseScreen
 import com.example.moneyflow.ui.ui_state.CreateTransactionItemUIState
 import com.example.moneyflow.ui.ui_state.PermissionDialogUIState
 import com.example.moneyflow.domain.model.Category
-import com.example.moneyflow.utils.DataPicker
-import com.example.moneyflow.utils.ImageStorageManager
 import com.example.moneyflow.utils.ReadImageAndVideoPermissionMessageProvider
 import com.example.moneyflow.utils.showPermissionDialog
 import com.example.moneyflow.ui.viewmodels.PermissionsViewModel
+import com.example.moneyflow.utils.currentDay
+import com.example.moneyflow.utils.isPermissionGranted
+import com.example.moneyflow.utils.showDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Date
 
 
@@ -56,13 +50,11 @@ class CreateTransactionFragment : Fragment(), BaseScreen {
     private val createTransactionViewModel: CreateTransactionViewModel by activityViewModels()
     private val permissionsViewModel: PermissionsViewModel by activityViewModels()
 
-    private val dataPicker = DataPicker()
-
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCreateNewTransactionBinding.inflate(inflater, container, false)
 
-        setAllListeners()
+        setupAllListeners()
 
         return binding.root
     }
@@ -70,10 +62,16 @@ class CreateTransactionFragment : Fragment(), BaseScreen {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        updateUI(createTransactionViewModel.uiItemState.value)
+        setupUI(createTransactionViewModel.uiItemState.value)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            observeCreateTransactionUIState()
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                createTransactionViewModel.uiState.collectLatest {
+                    if (it.isCreated) {
+                        setupUI(createTransactionViewModel.uiItemState.value)
+                    }
+                }
+            }
         }
     }
 
@@ -82,33 +80,15 @@ class CreateTransactionFragment : Fragment(), BaseScreen {
         _binding = null
     }
 
-    private suspend fun observeCreateTransactionUIState() {
-        withContext(Dispatchers.Default) {
-            createTransactionViewModel.uiState.collect { uiState ->
-                if(uiState.isCreated){
-                    updateUI(createTransactionViewModel.uiItemState.value)
-                }
-            }
-        }
-    }
-
-    private val openGallery = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+    private val pickVisualMediaResultLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
         if (it != null) {
             createTransactionViewModel.setImage(it)
             image.setImageURI(it)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, it))
-                ImageStorageManager().saveToInternalStorage(requireContext(), bitmap )
-            } else {
-                TODO("VERSION.SDK_INT < P")
-            }
-
         }
     }
 
     private val readMediaImagePermissionResultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         permissionsViewModel.onPermissionResult(Manifest.permission.READ_MEDIA_IMAGES, isGranted)
-
         permissionsViewModel.permissionDialogQueue.reversed().forEach {
             showReadMediaImagePermissionDialog(it)
         }
@@ -121,7 +101,6 @@ class CreateTransactionFragment : Fragment(), BaseScreen {
                 Manifest.permission.READ_MEDIA_IMAGES -> {
                     ReadImageAndVideoPermissionMessageProvider()
                 }
-
                 else -> {return}
             },
             isPermanentlyDeclined = shouldShowRequestPermissionRationale(permission),
@@ -136,6 +115,15 @@ class CreateTransactionFragment : Fragment(), BaseScreen {
         MaterialAlertDialogBuilder(requireContext()).showPermissionDialog(permissionDialogUIState)
     }
 
+    private fun openGallery() {
+        if (isPermissionGranted(Manifest.permission.READ_MEDIA_IMAGES)) {
+            pickVisualMediaResultLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        } else {
+            readMediaImagePermissionResultLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+        }
+    }
+
+
     private fun goToAppSettings() {
         Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
@@ -143,16 +131,16 @@ class CreateTransactionFragment : Fragment(), BaseScreen {
         ).also(::startActivity)
     }
 
-    private fun updateUI(uiState: CreateTransactionItemUIState) {
+    private fun setupUI(uiState: CreateTransactionItemUIState) {
         amountEditText.setText(uiState.amount?.toString())
         categoryAutoComplete.setText(uiState.category?.name)
-        categoryAutoComplete.setSimpleItems(createTransactionViewModel.uiItemState.value.listOfCategory.toTypedArray())
+        categoryAutoComplete.setSimpleItems(uiState.listOfCategory.toTypedArray())
         categoryInputText.setStartIconDrawable(uiState.category?.icon ?: R.drawable.ic_category)
-        dateEditText.setText(dataPicker.currentDay(Date(uiState.date)))
+        dateEditText.setText(currentDay(Date(uiState.date)))
         image.setImageURI(uiState.image)
     }
 
-    private fun setAllListeners() {
+    private fun setupAllListeners() {
         amountEditText.addTextChangedListener(onTextChangedListener())
 
         categoryAutoComplete.setOnItemClickListener { _, _, _, id ->
@@ -161,37 +149,16 @@ class CreateTransactionFragment : Fragment(), BaseScreen {
         }
 
         dateEditText.setOnClickListener {
-            showDatePicker()
+            showDatePicker {
+                createTransactionViewModel.setDate(it)
+                dateEditText.setText(currentDay(Date(it)))
+            }
         }
 
         image.setOnClickListener {
-            checkPermission()
+            openGallery()
         }
     }
-
-    private fun checkPermission() {
-        when (PackageManager.PERMISSION_GRANTED) {
-            ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.READ_MEDIA_IMAGES
-            ) -> {
-                openGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
-            else -> {
-                readMediaImagePermissionResultLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
-            }
-        }
-    }
-
-    private fun showDatePicker() {
-        return dataPicker.showDatePicker(
-            parentFragmentManager,
-            onPositiveButtonClickCallBack = { date ->
-                dateEditText.setText(dataPicker.currentDay(Date(date)))
-                createTransactionViewModel.setDate(date)
-            }
-        )
-    }
-
 
     private fun onTextChangedListener(): TextWatcher {
         return object: TextWatcher {
